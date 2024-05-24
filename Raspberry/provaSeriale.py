@@ -97,7 +97,4 @@ if __name__ == '__main__':
         elif status == 4:
             #scrivi ad arduino di tornare ad inserire il codice
             status = 2
-            break
-        
-        
-        
+            break       
