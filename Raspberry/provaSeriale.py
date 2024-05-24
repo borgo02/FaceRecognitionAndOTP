@@ -66,35 +66,34 @@ if __name__ == '__main__':
 
     line = ""
     while True:
-        draft_line = ser.readline().decode('utf-8').rstrip()
-        if draft_line != "":
-            splitted_line = draft_line.split(':')
-            if splitted_line[0] == "s":
-                status = int(splitted_line[1])
-                break
-            elif splitted_line[0] == "o":
-                otp = int(splitted_line[1])
-                break
-            elif splitted_line[0] == "i":
-                break
+        if ser.in_waiting > 0:
+            draft_line = ser.readline().decode('utf-8').rstrip()
+            if draft_line != "":
+                splitted_line = draft_line.split(':')
+                if splitted_line[0] == "s":
+                    status = int(splitted_line[1])
+                    break
+                elif splitted_line[0] == "o":
+                    otp = int(splitted_line[1])
+                    break
+                elif splitted_line[0] == "i":
+                    break
 
-        if status == 1:
-            if ser.in_waiting > 0:
-                line = ser.readline().decode('utf-8').rstrip()
-                print(line)
-            break
-        elif status == 2:
-            r = requests.get(f'https://pyotp-service.azurewebsites.net/api/http_trigger?code={otp}')
-            if "True" in r.text[0:1000]:
-                status = 3
-            else: 
-                status = 4
-            break
-        elif status == 3:
-            #di arduino di accendere led
-            status = 0
-            break
-        elif status == 4:
-            #scrivi ad arduino di tornare ad inserire il codice
-            status = 2
-            break       
+            if status == 1:
+                #far partire riconoscimento
+                break
+            elif status == 2:
+                r = requests.get(f'https://pyotp-service.azurewebsites.net/api/http_trigger?code={otp}')
+                if "True" in r.text[0:1000]:
+                    status = 3
+                else: 
+                    status = 4
+                break
+            elif status == 3:
+                #di arduino di accendere led
+                status = 0
+                break
+            elif status == 4:
+                #scrivi ad arduino di tornare ad inserire il codice
+                status = 2
+                break       
