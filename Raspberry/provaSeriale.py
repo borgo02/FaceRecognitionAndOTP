@@ -81,6 +81,8 @@ if __name__ == '__main__':
 
             if status == 1:
                 #far partire riconoscimento
+                stringToSend = "stato_1"
+                ser.write(stringToSend.encode('utf-8'))
                 status = 2
                 break
             elif status == 2:
