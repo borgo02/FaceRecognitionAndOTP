@@ -81,6 +81,7 @@ if __name__ == '__main__':
 
             if status == 1:
                 #far partire riconoscimento
+                status = 2
                 break
             elif status == 2:
                 r = requests.get(f'https://pyotp-service.azurewebsites.net/api/http_trigger?code={otp}')
