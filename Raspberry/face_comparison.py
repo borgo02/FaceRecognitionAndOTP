@@ -2,9 +2,9 @@ import boto3
 
 def compare_faces(sourceFile, targetFile):
 
-    session = boto3.Session(profile_name='dev',region_name='us-east-1')
-    client = session.client('rekognition')
-
+    #session = boto3.Session(profile_name='default', region_name='us-east-1')
+    #client = session.client('rekognition')
+    client = boto3.client('rekognition')
     imageSource = open(sourceFile, 'rb')
     imageTarget = open(targetFile, 'rb')
 
@@ -25,8 +25,8 @@ def compare_faces(sourceFile, targetFile):
     return len(response['FaceMatches'])
 
 def main():
-    source_file = '/Users/marco/Desktop/img_opencv/fotoMarco/marco1.jpg'
-    target_file = '/Users/marco/Desktop/img_opencv/fotoPaolo/paolo1.jpg'
+    source_file = "C:\\Users\\paolo\\Desktop\\img_opencv\\fotoMarco\\marco1.jpg"
+    target_file = "C:\\Users\\paolo\\Desktop\\img_opencv\\fotoPaolo\\paolo.jpg"
     face_matches = compare_faces(source_file, target_file)
     print("Face matches: " + str(face_matches))
 
