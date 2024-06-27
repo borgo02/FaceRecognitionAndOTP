@@ -3,6 +3,9 @@ import serial
 import cv2
 import pickle
 import requests
+from PIL import Image
+import numpy as np
+import os
 
 otp = 0
 status = 1
@@ -12,7 +15,8 @@ status = 1
 #           3   otp corretto
 #           4   otp errato --> poi ripasso in 2
 
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+image_dir = os.path.join(BASE_DIR, "images")
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -27,39 +31,17 @@ with open("labels.pickle", "rb") as f:
 
 def face_recognition():
     while(True):
-        #capture frame-by-frame
-        ret, frame = cap.read()
-        if frame is not None:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
-            for(x, y, w, h) in faces:
-                print(x, y, w, h)
-                roi_gray = gray[y:y+h, x:x+w]
-                roi_color = frame[y:y+h, x:x+w]
-
-                #recognize deep learned model predict 
-                id_, conf = recognizer.predict(roi_gray)
-                if(conf>=75):
-                    print(id_)
-                    print(labels[id_])
-                    print(conf)
-                    return True
-
-                img_item = "my-image.png"
-                cv2.imwrite(img_item, roi_gray)
-
-                color = (255, 0, 0)  #BGR 0-255
-                stroke = 2
-                end_cord_x = x + w
-                end_cord_y = y + h
-                cv2.rectangle(frame, (x, y), (end_cord_x, end_cord_y), color, stroke)
-
-            cv2.imshow("Frame",frame)
-
-            #display the resulting frame
-            #cv2.imshow('frame', frame)
-            if cv2.waitKey(20) & 0xFF == ord('q'):
-                break
+        path = os.path.join(image_dir, "test.jpg")
+        normal =  Image.open(path)
+        if normal is not None:
+            gray =  normal.convert("L")
+            image_array = np.array(gray, "uint8")
+            id_, conf = recognizer.predict(image_array)
+            if(conf>=75):
+                print(id_)
+                print(labels[id_])
+                print(conf)
+                return True
 
 
 if __name__ == '__main__':
