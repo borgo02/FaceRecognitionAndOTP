@@ -6,6 +6,7 @@ const byte COLS = 4; // number of columns
 const int trigPin = 9;  
 const int echoPin = 10;
 const int ledPin = 11;
+const int ledPin_1 = 1;
 
 bool distanceReached=false;
 float duration, distance; 
@@ -20,6 +21,7 @@ char hexaKeys[ROWS][COLS] = {
 };
 
 String strToSend="";
+String OstrToSend="";
 String strReceived="";
 
 byte rowPins[ROWS] = {8, 7, 6, 5}; // row pinouts of the keypad R1 = D8, R2 = D7, R3 = D6, R4 = D5
@@ -28,10 +30,12 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS,COLS);
 
 void setup()
 {
+  pinMode(ledPin_1, OUTPUT);
   pinMode(trigPin, OUTPUT);  
 	pinMode(echoPin, INPUT);
   pinMode(ledPin, OUTPUT); 
   Serial.begin(9600);
+  
 }
  
 void loop()
@@ -48,11 +52,23 @@ void loop()
     if(distance < 10)
     {
       digitalWrite(ledPin,HIGH);
-      Serial.println("A");
+      Serial.println("s:1");
       stato = 1;
     }
   }
   else if(stato == 1){
+    strReceived=readSerial();
+    if(strReceived == "stato_1"){
+      stato=2;
+    }
+    else if(strReceived == "stato_3"){
+      stato=3;
+    }
+    else if(strReceived == "stato_4"){
+      stato=2;
+    }
+  }
+  else if(stato == 2){
     char customKey = customKeypad.getKey();
     if (customKey){
       if(customKey!='*')
@@ -61,24 +77,34 @@ void loop()
       }
       else   
       {
-        Serial.println(strToSend);
-        stato = 2;
-        Serial.println(stato);
+        OstrToSend.concat(strToSend);
+        Serial.println(OstrToSend);
+        stato = 1;
       }
     }
   }
-  else if(stato == 2){
-    if(Serial.available()) {
-      do {
-        if(Serial.available()) {
-          c = Serial.read();
-          strReceived+= c;
-        }
-      }while(c != '\n');
-      Serial.println(strReceived);
-    }
-    if(strReceived == "ciao"){
-      Serial.println("ok");
-    }
+  else if(stato == 3){
+    digitalWrite(ledPin_1, HIGH);
+  }
+  else if(stato == 4){
+    digitalWrite(ledPin_1, HIGH);
+    delay(1500);
+    digitalWrite(ledPin_1, LOW);
+    stato=2;
   }
 }
+
+String readSerial(){
+  String serialStr="";
+  if(Serial.available()){
+    do {
+      if(Serial.available()) {
+        c = Serial.read();
+        serialStr+= c;
+      }
+    }while(c != '\n');
+  }
+  return serialStr;
+}
+
+
