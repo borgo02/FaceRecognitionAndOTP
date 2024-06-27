@@ -42,6 +42,7 @@ def face_recognition():
                 print(id_)
                 print(labels[id_])
                 print(conf)
+                return True
 
             img_item = "my-image.png"
             cv2.imwrite(img_item, roi_gray)
@@ -80,10 +81,11 @@ if __name__ == '__main__':
                     break
 
             if status == 1:
-                #far partire riconoscimento
-                stringToSend = "stato_1"
-                ser.write(stringToSend.encode('utf-8'))
-                status = 2
+                recog_status = face_recognition()
+                if recog_status:
+                    stringToSend = "stato_1"
+                    ser.write(stringToSend.encode('utf-8'))
+                    status = 2
                 break
             elif status == 2:
                 r = requests.get(f'https://pyotp-service.azurewebsites.net/api/http_trigger?code={otp}')
