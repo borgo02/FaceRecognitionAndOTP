@@ -12,7 +12,7 @@ import os
 
 filename = "test.jpg"
 
-subprocess.run(["sudo fswebcam %s"%(filename)], shell=True)
+subprocess.run(["fswebcam %s"%(filename)], shell=True)
 
 print("Saving photo to %s"%(filename))
 

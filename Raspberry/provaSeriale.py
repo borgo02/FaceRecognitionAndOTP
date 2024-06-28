@@ -33,7 +33,7 @@ with open("labels.pickle", "rb") as f:
 def face_recognition():
     while(True):
         path = os.path.join(BASE_DIR, "test.jpg")
-        subprocess.run(["sudo fswebcam %s"%(path)], shell=True)
+        subprocess.run(["fswebcam %s"%(path)], shell=True)
         #subprocess.Popen("sudo fswebcam image.jpg",shell=True).communicate()
         normal =  Image.open(path)
         if normal is not None:
