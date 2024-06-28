@@ -31,12 +31,12 @@ RUN apt-get update && \
     fswebcam
 #Imposta la directory di lavoro
 WORKDIR /app
-
-# Copia il file Python nella directory di lavoro
-COPY capture_images.py .
 # Installa le dipendenze necessarie (se presenti)
 COPY requirements.txt .
 #RUN apt-get update && apt-get install -y cmake
 RUN pip install -r requirements.txt
+# Copia il file Python nella directory di lavoro
+COPY capture_images.py .
+
 # Comando per eseguire lo script Python
 CMD ["python", "capture_images.py"]

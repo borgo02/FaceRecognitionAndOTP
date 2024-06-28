@@ -11,13 +11,12 @@ import os
 #sleep(5)
 #camera.stop_preview()
 
-filename = "/shared/test.jpg"
+filename = "test.jpg"
 
 #client = docker.from_env()
 #container = client.containers.run("test_docker_v14", detach=True)
 #print("Saving container to %s"%(container))
 subprocess.run(["fswebcam %s"%(filename)], shell=True)
-
 print("Saving photo to %s"%(filename))
 
 #time.sleep(10)

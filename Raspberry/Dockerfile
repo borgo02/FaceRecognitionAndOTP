@@ -3,8 +3,8 @@
 #FROM arm32v7/python:3.9-slim
 #FROM jritsema/opencv-tensorflow-lite-arm32v7
 FROM inyoursaas/opencv:arm32v7
-RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \
     apt-transport-https \
     curl \
@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     libxcb1-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     fswebcam
@@ -37,10 +38,13 @@ RUN pip install -r requirements.txt
 
 # Copia il file Python nella directory di lavoro
 COPY provaSeriale.py .
-COPY trainer.yml .
-COPY labels.pickle .
+COPY trainer3.yml .
+COPY labels3.pickle .
 COPY haarcascade_frontalface_alt2.xml .
+COPY capture_images.py .
 
+
+#sudo docker run -v /var/run/docker.sock:/var/run/docker.sock --privileged test_docker_v14
 
 
 

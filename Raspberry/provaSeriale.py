@@ -7,6 +7,9 @@ from PIL import Image
 import numpy as np
 import os
 import subprocess
+import docker
+import time
+
 
 otp = 0
 status = 1
@@ -21,29 +24,50 @@ image_dir = os.path.join(BASE_DIR, "images")
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("trainer.yml")
+recognizer.read("trainer3.yml")
 
 cap = cv2.VideoCapture(0)
 
 labels = {}
-with open("labels.pickle", "rb") as f:
+with open("labels3.pickle", "rb") as f:
     og_labels = pickle.load(f)
     labels = {v:k for k,v in og_labels.items()}
 
 def face_recognition():
     while(True):
         path = os.path.join(BASE_DIR, "test.jpg")
-        subprocess.run(["fswebcam %s"%(path)], shell=True)
+        #client = docker.from_env()
+        volume_bindings = {
+        '/app': {'bind': '/shared', 'mode': 'rw'}
+        }
+        #container = client.containers.run("test_docker_v15",
+        #                                volumes=volume_bindings,
+        #                                privileged=True,
+        #                                detach=True)
+        #exit_code = container.wait()
+        #print(exit_code)
+        #for i in range (1, 6):
+        #    time.sleep(1)
+        #    print(i)
+        #subprocess.run(["fswebcam %s"%(path)], shell=True)
+        #subprocess.run(["fswebcam %s"%(path)], shell=True)
+        #subprocess.run(["fswebcam %s"%(path)], shell=True)
+
         #subprocess.Popen("sudo fswebcam image.jpg",shell=True).communicate()
-        normal =  Image.open(path)
+        error = True
+        while error:
+            try:
+                normal =  Image.open("/shared/test.jpg")
+                error = False
+            except:
+                error = True
+                time.sleep(5)
         if normal is not None:
             gray =  normal.convert("L")
             image_array = np.array(gray, "uint8")
             id_, conf = recognizer.predict(image_array)
             if(conf>=75):
-                print(id_)
                 print(labels[id_])
-                print(conf)
                 return True
 
 
