@@ -3,7 +3,9 @@
 #FROM arm32v7/python:3.9-slim
 #FROM inyoursaas/opencv:arm32v7-20190219
 #FROM elswork/tf-opencv:armv7l
-FROM jritsema/opencv-tensorflow-lite-arm32v7
+FROM inyoursaas/opencv:arm32v7
+#FROM jritsema/opencv-tensorflow-lite-arm32v7
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \
     apt-transport-https \
     curl \
@@ -23,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     libxcb1-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     fswebcam

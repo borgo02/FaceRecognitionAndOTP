@@ -1,2 +1,2 @@
-opencv-contrib-python==4.5.5.62
-#Pillow
+#opencv-contrib-python==4.5.5.62
+Pillow
