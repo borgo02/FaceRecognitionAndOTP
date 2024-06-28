@@ -10,13 +10,9 @@ import os
 #sleep(5)
 #camera.stop_preview()
 
-lapse_dir = datetime.strftime(datetime.now(),"timelapse_%Y%m%d-%H%M%S")
-subprocess.call(['mkdir',lapse_dir])
+filename = "test.jpg"
 
-prefix = datetime.strftime(datetime.now(),"%Y%m%d-%H%M%S")
-filename = lapse_dir+"/"+prefix+".jpg"
-
-subprocess.call(['fswebcam','-r','350x350','--no-banner',filename])
+subprocess.run(["sudo fswebcam %s"%(filename)], shell=True)
 
 print("Saving photo to %s"%(filename))
 

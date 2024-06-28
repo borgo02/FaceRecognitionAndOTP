@@ -6,6 +6,7 @@ import requests
 from PIL import Image
 import numpy as np
 import os
+import subprocess
 
 otp = 0
 status = 1
@@ -31,7 +32,9 @@ with open("labels.pickle", "rb") as f:
 
 def face_recognition():
     while(True):
-        path = os.path.join(image_dir, "test.jpg")
+        path = os.path.join(BASE_DIR, "test.jpg")
+        subprocess.run(["sudo fswebcam %s"%(path)], shell=True)
+        #subprocess.Popen("sudo fswebcam image.jpg",shell=True).communicate()
         normal =  Image.open(path)
         if normal is not None:
             gray =  normal.convert("L")
