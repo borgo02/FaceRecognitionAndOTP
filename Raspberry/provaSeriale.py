@@ -78,7 +78,14 @@ if __name__ == '__main__':
     line = ""
     while True:
         if ser.in_waiting > 0:
-            draft_line = ser.readline().decode('utf-8').rstrip()
+#            draft_line = ser.readline().decode('ascii').rstrip()
+            draft_line = ""
+            isReading=True
+            while isReading:
+                if ser.in_waiting > 0:
+                    draft_line += ser.read(ser.in_waiting).decode('ascii')
+                    if '\n' in draft_line:
+                        isReading=False
             print(draft_line + "asd")
             if draft_line != "":
                 splitted_line = draft_line.split(':')
@@ -86,13 +93,15 @@ if __name__ == '__main__':
                     status = int(splitted_line[1])
                 elif splitted_line[0] == "o":
                     otp = int(splitted_line[1])
+        
+
             print(status)
             print(otp)
             if status == 1:
                 recog_status = face_recognition()
                 if recog_status:
-                    stringToSend = "stato_1"
-                    ser.write(stringToSend.encode('utf-8'))
+                    stringToSend = "stato_1\n"
+                    ser.write(stringToSend.encode('ascii'))
                     status = 2
                 break
             elif status == 2:
@@ -106,13 +115,13 @@ if __name__ == '__main__':
                 break
             elif status == 3:
                 #di arduino di accendere led
-                stringToSend = "stato_3"
-                ser.write(stringToSend.encode('utf-8'))
+                stringToSend = "stato_3\n"
+                ser.write(stringToSend.encode('ascii'))
                 status = 0
                 break
             elif status == 4:
                 #scrivi ad arduino di tornare ad inserire il codice
-                stringToSend = "stato_4"
-                ser.write(stringToSend.encode('utf-8'))
+                stringToSend = "stato_4\n"
+                ser.write(stringToSend.encode('ascii'))
                 status = 2
                 break       
