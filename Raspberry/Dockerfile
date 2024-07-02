@@ -46,6 +46,8 @@ COPY capture_images.py .
 
 #sudo docker run -v /var/run/docker.sock:/var/run/docker.sock --privileged test_docker_v14
 #sudo docker run -v /home/marcopetrosilli/Desktop/:/shared --privileged test_docker_v14
+#sudo docker build -t test_docker_v14 .
+#sudo docker run -it -v /home/marcopetrosilli/Desktop/:/shared --privileged test_docker_v14
 
 
 # Comando per eseguire lo script Python

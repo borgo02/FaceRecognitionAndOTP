@@ -12,7 +12,7 @@ import time
 
 
 otp = 0
-status = 1
+status = 0
 #Status =   0   idle
 #           1   ultrasuoni attivo    
 #           2   volto riconosciuto
@@ -65,7 +65,9 @@ def face_recognition():
         if normal is not None:
             gray =  normal.convert("L")
             image_array = np.array(gray, "uint8")
+            print(time.time())
             id_, conf = recognizer.predict(image_array)
+            print(time.time())
             if(conf>=75):
                 print(labels[id_])
                 return True
@@ -78,7 +80,7 @@ if __name__ == '__main__':
     line = ""
     while True:
         if ser.in_waiting > 0:
-#            draft_line = ser.readline().decode('ascii').rstrip()
+#           draft_line = ser.readline().decode('ascii').rstrip()
             draft_line = ""
             isReading=True
             while isReading:
@@ -86,7 +88,7 @@ if __name__ == '__main__':
                     draft_line += ser.read(ser.in_waiting).decode('ascii')
                     if '\n' in draft_line:
                         isReading=False
-            print(draft_line + "asd")
+            print(draft_line)
             if draft_line != "":
                 splitted_line = draft_line.split(':')
                 if splitted_line[0] == "s":
@@ -95,15 +97,17 @@ if __name__ == '__main__':
                     otp = int(splitted_line[1])
         
 
-            print(status)
-            print(otp)
+        if status != 0:
             if status == 1:
                 recog_status = face_recognition()
+                print(recog_status)
                 if recog_status:
                     stringToSend = "stato_1\n"
-                    ser.write(stringToSend.encode('ascii'))
+                    try:
+                        ser.write(stringToSend.encode('ascii'))
+                    except Exception as error:
+                        print(error)
                     status = 2
-                break
             elif status == 2:
                 if otp != 0:
                     r = requests.get(f'https://pyotp-service.azurewebsites.net/api/http_trigger?code={otp}')
@@ -112,16 +116,13 @@ if __name__ == '__main__':
                     else: 
                         status = 4
                     otp = 0
-                break
             elif status == 3:
                 #di arduino di accendere led
                 stringToSend = "stato_3\n"
                 ser.write(stringToSend.encode('ascii'))
                 status = 0
-                break
             elif status == 4:
                 #scrivi ad arduino di tornare ad inserire il codice
                 stringToSend = "stato_4\n"
                 ser.write(stringToSend.encode('ascii'))
                 status = 2
-                break       
