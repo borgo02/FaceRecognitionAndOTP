@@ -6,7 +6,7 @@ const byte COLS = 4; // number of columns
 const int trigPin = 9;  
 const int echoPin = 10;
 const int ledPin = 11;
-const int ledPin_1 = 1;
+const int ledPin_1 = A5;
 
 bool distanceReached=false;
 float duration, distance; 
@@ -21,7 +21,7 @@ char hexaKeys[ROWS][COLS] = {
 };
 
 String strToSend="";
-String OstrToSend="";
+String OstrToSend="o:";
 String strReceived="";
 
 byte rowPins[ROWS] = {8, 7, 6, 5}; // row pinouts of the keypad R1 = D8, R2 = D7, R3 = D6, R4 = D5
@@ -35,7 +35,7 @@ void setup()
 	pinMode(echoPin, INPUT);
   pinMode(ledPin, OUTPUT); 
   Serial.begin(9600);
-  
+  Serial.println("Arduino pronto");
 }
  
 void loop()
@@ -51,24 +51,24 @@ void loop()
     delay(100);  
     if(distance < 10)
     {
-      digitalWrite(ledPin,HIGH);
+      Blink(2,ledPin);
       Serial.println("s:1");
       stato = 1;
     }
   }
   else if(stato == 1){
     strReceived=readSerial();
-    if(strReceived == "stato_1"){
+    if(strReceived == "stato_1")
       stato=2;
-    }
-    else if(strReceived == "stato_3"){
+    else if(strReceived == "stato_3")
       stato=3;
-    }
-    else if(strReceived == "stato_4"){
-      stato=2;
-    }
+    else if(strReceived == "stato_4")
+      stato=4;
+    strReceived="";
   }
   else if(stato == 2){
+    //Blink(1);
+    digitalWrite(ledPin_1, HIGH);
     char customKey = customKeypad.getKey();
     if (customKey){
       if(customKey!='*')
@@ -79,32 +79,54 @@ void loop()
       {
         OstrToSend.concat(strToSend);
         Serial.println(OstrToSend);
+        OstrToSend="o:";
+        strToSend="";
         stato = 1;
       }
     }
   }
   else if(stato == 3){
-    digitalWrite(ledPin_1, HIGH);
+    Blink(5,ledPin_1);
+    stato=0;
   }
   else if(stato == 4){
-    digitalWrite(ledPin_1, HIGH);
-    delay(1500);
-    digitalWrite(ledPin_1, LOW);
+    Blink(2,ledPin_1);
     stato=2;
   }
 }
 
 String readSerial(){
-  String serialStr="";
-  if(Serial.available()){
+  
+  /*if(Serial.available()){
     do {
       if(Serial.available()) {
         c = Serial.read();
         serialStr+= c;
       }
     }while(c != '\n');
+  }*/
+  String message="";
+  bool isReading=true;
+  while(isReading){
+    if (Serial.available() > 0)
+      message = Serial.readStringUntil('\n');
+    if(message!=""){
+      Serial.print("Received_Ard: ");
+      Serial.println(message);
+      isReading=false;
+      return message;
+    }
   }
-  return serialStr;
+  
+  delay(100);
 }
 
+void Blink(int n, int ledPin){
+  for(int i=0;i<n;i++){
+    digitalWrite(ledPin, HIGH);
+    delay(1000);
+    digitalWrite(ledPin, LOW);
+    delay(1000);
+  }
+}
 
