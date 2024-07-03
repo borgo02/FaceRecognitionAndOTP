@@ -7,8 +7,8 @@ from PIL import Image
 import numpy as np
 import os
 import subprocess
-import docker
 import time
+#import docker
 
 
 otp = 0
@@ -25,8 +25,6 @@ image_dir = os.path.join(BASE_DIR, "images")
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read("trainer3.yml")
-
-cap = cv2.VideoCapture(0)
 
 labels = {}
 with open("labels3.pickle", "rb") as f:
@@ -49,15 +47,12 @@ def face_recognition():
         #for i in range (1, 6):
         #    time.sleep(1)
         #    print(i)
-        #subprocess.run(["fswebcam %s"%(path)], shell=True)
-        #subprocess.run(["fswebcam %s"%(path)], shell=True)
-        #subprocess.run(["fswebcam %s"%(path)], shell=True)
-
-        #subprocess.Popen("sudo fswebcam image.jpg",shell=True).communicate()
+        subprocess.run(["fswebcam %s"%(path)], shell=True)
         error = True
         while error:
             try:
-                normal =  Image.open("/shared/test.jpg")
+                #normal =  Image.open("/shared/test.jpg")
+                normal =  Image.open(path)
                 error = False
             except:
                 error = True
