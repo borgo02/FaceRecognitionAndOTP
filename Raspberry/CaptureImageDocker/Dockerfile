@@ -37,6 +37,10 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 # Copia il file Python nella directory di lavoro
 COPY capture_images.py .
+COPY new-test.py .
+COPY trainer4.yml .
+COPY labels4.pickle .
+COPY haarcascade_frontalface_alt2.xml .
 
 # Comando per eseguire lo script Python
-CMD ["python", "capture_images.py"]
+CMD ["python", "new-test.py"]

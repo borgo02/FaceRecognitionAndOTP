@@ -48,28 +48,26 @@ def face_recognition():
         #    time.sleep(1)
         #    print(i)
         subprocess.run(["fswebcam %s"%(path)], shell=True)
-        print('pre timer')
         time.sleep(3)
-        print('post timer')
         error = True
         while error:
             try:
                 #normal =  Image.open("/shared/test.jpg")
-                normal =  Image.open(path)
+                normal = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+                normal = cv2.resize(normal, (250, 250))
+
                 error = False
             except:
                 error = True
-                time.sleep(5)
+                time.sleep(3)
         if normal is not None:
-            gray =  normal.convert("L")
-            image_array = np.array(gray, "uint8")
-            print(time.time())
-            id_, conf = recognizer.predict(image_array)
-            print(time.time())
-            if(conf>=90 and conf <= 150):
-                print(conf)
-                print(labels[id_])
+            #gray =  normal.convert("L")
+            #image_array = np.array(gray, "uint8")
+            id_, conf = recognizer.predict(normal)
+            if(conf>=70 and conf <=120):
                 return True
+            else:
+                print('Non riconosciuto')
 
 
 if __name__ == '__main__':
