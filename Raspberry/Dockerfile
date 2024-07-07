@@ -38,8 +38,8 @@ RUN pip install -r requirements.txt
 
 # Copia il file Python nella directory di lavoro
 COPY provaSeriale.py .
-COPY trainer3.yml .
-COPY labels3.pickle .
+COPY trainer4.yml .
+COPY labels4.pickle .
 COPY haarcascade_frontalface_alt2.xml .
 COPY capture_images.py .
 

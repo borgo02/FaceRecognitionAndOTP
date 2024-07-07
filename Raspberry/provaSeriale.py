@@ -24,16 +24,16 @@ image_dir = os.path.join(BASE_DIR, "images")
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("trainer3.yml")
+recognizer.read("trainer4.yml")
 
 labels = {}
-with open("labels3.pickle", "rb") as f:
+with open("labels4.pickle", "rb") as f:
     og_labels = pickle.load(f)
     labels = {v:k for k,v in og_labels.items()}
 
 def face_recognition():
     while(True):
-        path = os.path.join(BASE_DIR, "test.jpg")
+        path = os.path.join(BASE_DIR, "test1.jpg")
         #client = docker.from_env()
         volume_bindings = {
         '/app': {'bind': '/shared', 'mode': 'rw'}
@@ -48,6 +48,9 @@ def face_recognition():
         #    time.sleep(1)
         #    print(i)
         subprocess.run(["fswebcam %s"%(path)], shell=True)
+        print('pre timer')
+        time.sleep(3)
+        print('post timer')
         error = True
         while error:
             try:
@@ -63,7 +66,8 @@ def face_recognition():
             print(time.time())
             id_, conf = recognizer.predict(image_array)
             print(time.time())
-            if(conf>=75):
+            if(conf>=90 and conf <= 150):
+                print(conf)
                 print(labels[id_])
                 return True
 
