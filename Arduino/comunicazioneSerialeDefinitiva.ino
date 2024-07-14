@@ -58,7 +58,9 @@ void loop()
   }
   else if(stato == 1){
     strReceived=readSerial();
-    if(strReceived == "stato_1")
+    if (strReceived == "stato_0")
+      stato = 0;
+    else if(strReceived == "stato_1")
       stato=2;
     else if(strReceived == "stato_3")
       stato=3;

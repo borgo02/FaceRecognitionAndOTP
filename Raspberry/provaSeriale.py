@@ -32,6 +32,7 @@ with open("labels4.pickle", "rb") as f:
     labels = {v:k for k,v in og_labels.items()}
 
 def face_recognition():
+    tentative = 0
     while(True):
         path = os.path.join(BASE_DIR, "test1.jpg")
         #client = docker.from_env()
@@ -67,7 +68,11 @@ def face_recognition():
             if(conf>=70 and conf <=120):
                 return True
             else:
+                tentative = tentative + 1
                 print('Non riconosciuto')
+            
+            if (tentative > 3):
+                return False
 
 
 if __name__ == '__main__':
@@ -105,6 +110,13 @@ if __name__ == '__main__':
                     except Exception as error:
                         print(error)
                     status = 2
+                else:
+                    stringToSend = "stato_0\n"
+                    try:
+                        ser.write(stringToSend.encode('ascii'))
+                    except Exception as error:
+                        print(error)
+                    status = 0
             elif status == 2:
                 if otp != 0:
                     r = requests.get(f'https://pyotp-service.azurewebsites.net/api/http_trigger?code={otp}')
